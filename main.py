@@ -87,12 +87,13 @@ class SessionHandler(webapp2.RequestHandler):
     def post(self):
         json_string = self.request.body
         json_object = json.loads(json_string)
-        if json_object["sequence"] is not None:
+        sequence = json_object["sequence"]
+        if sequence is not None:
             # session_id = generate_session_id()
-            session_key = add_session(json_object["sequence"])
+            session_key = add_session(sequence)
 
-            json_response = {"session_id": str(session_key)}
-            self.response.write(json.dumps(json_response))
+            # json_response = {"session_id": str(session_key), "sequence": sequence}
+            self.response.write(json.dumps(get_session(session_key).to_dict(), default=date_handler))
 
 class GetSequenceHandler(webapp2.RequestHandler):
     def get(self, session_id):
@@ -110,7 +111,7 @@ class MethodHandler(webapp2.RequestHandler):
             if method == "next-largest":
                 if parameter is not None:
                     response["next_largest_index"] = get_next_largest(session_id, parameter)
-            self.response.write(response)
+            self.response.write(json.dumps(response))
 
 
 
