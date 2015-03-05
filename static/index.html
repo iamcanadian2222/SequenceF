@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html ng-app="sequenceApp">
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>SequenceF</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.14/angular.min.js"></script>
+    <script src="js/controllers.js"></script>
+</head>
+<body ng-controller="SequenceCtrl">
+    <h1>SequenceF</h1>
+    <div>Welcome to the sequence mutilator!</div>
+    <div class="sequence_list">
+        <ul>
+            <li ng-repeat="item in sequences">
+              <span><a href="/sequence/{{item.key}}">{{item.key}}</a></span>
+              <div>
+                  <span ng-repeat="n in item.sequence track by $index">
+                      <a href="/sequence/{{item.key}}/next-largest/{{$index}}">{{n}}</a>
+                  </span>
+              </div>
+            </li>
+        </ul>
+    </div>
+
+</body>
+</html>
