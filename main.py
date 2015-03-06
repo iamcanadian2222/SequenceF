@@ -39,6 +39,7 @@ class ModelUtils(object):
 class Session(ModelUtils, ndb.Model):
     """A main model for representing an individual Session entry."""
     # session_id = ndb.StringProperty()
+    name = ndb.StringProperty()
     sequence = ndb.IntegerProperty(repeated=True)
     date = ndb.DateTimeProperty(auto_now_add=True)
 
@@ -56,15 +57,13 @@ def get_sessions(self):
 def get_session(session_id):
     """Given a session_id, return the Session object"""
     return Session.get_by_id(int(session_id),parent=get_sessions_key())
-    return ndb.Key()
-    # session_query = Session.query(Session.key == session_id, ancestor=get_sessions_key())
-    #return session_query.fetch()
 
 
-def add_session(sequence):
+def add_session(sequence, name):
     session = Session(parent=get_sessions_key())  # to store a custom key_name in ndb, use id=XXX
     # session.session_id = session_id
     session.sequence = sequence
+    session.name = name
     key = session.put()
     return key.id()
 
@@ -88,17 +87,38 @@ class SessionHandler(webapp2.RequestHandler):
         json_string = self.request.body
         json_object = json.loads(json_string)
         sequence = json_object["sequence"]
-        if sequence is not None:
+        name = json_object["name"]
+        if sequence is not None and name is not None:
             # session_id = generate_session_id()
-            session_key = add_session(sequence)
+            session_key = add_session(sequence, name)
 
             # json_response = {"session_id": str(session_key), "sequence": sequence}
             self.response.write(json.dumps(get_session(session_key).to_dict(), default=date_handler))
 
-class GetSequenceHandler(webapp2.RequestHandler):
+
+class SequenceHandler(webapp2.RequestHandler):
     def get(self, session_id):
         session = get_session(session_id)
         self.response.write(json.dumps(session.to_dict(), default=date_handler))
+
+    def delete(self, session_id):
+        session = get_session(session_id)
+        session.key.delete()
+
+    def put(self, session_id):
+        json_object = json.loads(self.request.body)
+        session_id2 = json_object["session_key"]
+        sequence = json_object["sequence"]
+        name = json_object["name"]
+        if long(session_id2) != long(session_id) or sequence is None:  # make sure the session_id used in the URL matches the body
+            self.response.set_status(400)
+        else:
+            session = get_session(session_id)
+            session.name = name  # emptying out the name is legal in our implementation
+            session.sequence = sequence
+            session.put()
+
+
 
 valid_methods = ["next-largest", "next-smallest", "largest", "smallest"]
 class MethodHandler(webapp2.RequestHandler):
@@ -129,15 +149,15 @@ def get_next_largest(session_id, index):
     return -1  # if we get this far, we didn't find a larger value
 
 
-# POST /session/ { "sequence": [ 1, 2, 3, 4, 1] }
-# GET /session/:sessionid/nextHighestIndex/:index
-# GET /session/:id/currentValues
+# --- POST /session/ { "sequence": [ 1, 2, 3, 4, 1] }
+# --- GET /session/:sessionid/nextHighestIndex/:index
+# --- GET /session/:id/
 # DELETE /session/:id
 
 app = webapp2.WSGIApplication([
     ('/', MainHandler),
     webapp2.Route("/sequence", handler=SessionHandler),  # originally filtered to just POSTs: , methods=["POST"]
-    webapp2.Route("/sequence/<session_id>", handler=GetSequenceHandler, methods=["GET"]),
+    webapp2.Route("/sequence/<session_id>", handler=SequenceHandler, methods=["GET", "DELETE", "PUT"]),
     webapp2.Route("/sequence/<session_id>/<method>", handler=MethodHandler),
     webapp2.Route("/sequence/<session_id>/<method>/<parameter:\w+>", handler=MethodHandler),
 ], debug=True)

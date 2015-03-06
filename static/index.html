@@ -5,52 +5,76 @@
     <title>SequenceF</title>
     <!-- Bootstrap -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap-theme.min.css">
-    <!--<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>-->
-
-
+    <link rel="stylesheet" href="css/bootstrap.paper.min.css">
 
     <!-- AngularJS -->
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.14/angular.min.js"></script>
     <script src="js/controllers.js"></script>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.12.1/ui-bootstrap-tpls.min.js"></script>
+
+    <!-- Custom Styles -->
+    <link rel="stylesheet" href="css/style.css">
 </head>
 <body ng-controller="SequenceCtrl">
-    <h1>SequenceF</h1>
-    <div>Welcome to the sequence mutilator!</div>
-    <div class="tools">
-        <div class="btn btn-default" ng-click="openAddNew()">Add Sequence</a>
-    </div>
-
-    <script type="text/ng-template" id="add_sequence.html">
-        <div class="panel-heading">
-            <h3 class="panel-title">Add/Edit Sequence</h3>
+<nav class="navbar navbar-inverse">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" ng-init="isMainNavCollapsed = true" ng-click="isMainNavCollapsed = !isMainNavCollapsed">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#">SequenceF</a>
         </div>
-        <div class="panel-body">
-            <div class="node row" ng-repeat="item in newSequence track by $index">
-                <div class="col-xs-10">
-                    <input type="number" ng-model="newSequence[$index]" class="form-control col-xs-1" placeholder="New Integer">
-                </div>
-                <div class="btn btn-primary btn-sm" ng-show="$last" ng-click="addSequenceItem()"><span class="glyphicon glyphicon-plus"></span></div>
-            </div>
-            <div class="btn btn-success pull-right" ng-click="createSequence()">Submit</div>
+
+        <div class="navbar-collapse" collapse="isMainNavCollapsed">
+          <ul class="nav navbar-nav navbar-right">
+                <li><button class="btn navbar-btn btn-default" ng-click="openAddEdit()">Add Sequence</button></li>
+                <!--<li><a href="#">Login</a></li>-->
+          </ul>
         </div>
-    </script>
+      </div>
+    </nav>
 
-    <div class="sequence_list">
-        <ul>
-            <li ng-repeat="item in sequences">
-              <span><a href="/sequence/{{item.key}}">{{item.key}}</a></span>
-              <div>
-                  <span ng-repeat="n in item.sequence track by $index">
-                      <a href="" ng-click="findLargest(item.key, $index)">{{n}}</a>
-                      <!--/sequence/{{item.key}}/next-largest/{{$index}}-->
-                  </span>
-              </div>
-            </li>
-        </ul>
+    <div class="container">
+        <h2>Sequences</h2>
+        <div>Welcome to the sequence mutilator!
+            <span class="label label-primary" tooltip-placement="right" tooltip="Click a number to find the index of the next largest number in the sequence.">Largest</span>
+        </div>
+
+        <div class="sequence-list">
+            <table class="table table-striped">
+                <tr>
+                    <th class="col-sm-3">Name</th>
+                    <th class="col-sm-2"></th>
+                    <th class="col-sm-8">Sequence</th>
+
+                </tr>
+                <tr ng-repeat="item in sequences">
+                    <td>{{item.name || "[Unnamed]"}}</td>
+                    <td>
+                        <div class="controls">
+                            <button class="btn btn-xs btn-danger" ng-click="confirmDelete(null, item)" tooltip="Delete">
+                                <span class="glyphicon glyphicon-trash"></span>
+                            </button>
+                            <button class="btn btn-xs btn-default" ng-click="openAddEdit(null, item.name, item.sequence, item.key)" tooltip="Edit">
+                                <span class="glyphicon glyphicon-pencil"></span>
+                            </button>
+                            <button class="btn btn-xs btn-default" ng-click="openAddEdit(null, item.name, item.sequence)" tooltip="Create Copy">
+                                <span class="glyphicon glyphicon-copy"></span>
+                            </button>
+                        </div>
+                    </td>
+                    <td>
+                        <span ng-repeat="n in item.sequence track by $index">
+                            <a href="" ng-click="findLargest(item.key, $index)">{{n}}</a>
+                        </span>
+                    </td>
+                </tr>
+            </table>
+        </div>
     </div>
-
 </body>
 </html>

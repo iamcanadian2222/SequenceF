@@ -1,0 +1,15 @@
+<form>
+    <div class="modal-header">
+        <h3 class="modal-title">{{title ||"Are you sure?"}}</h3>
+    </div>
+    <div class="modal-body">
+        <div>{{confirmationMessage}}</div>
+        <div>{{$scope.additionalDetails}}</div>
+    </div>
+    <div class="modal-footer">
+        <div class="pull-right">
+            <button type="button" class="btn btn-danger" ng-click="cancel()">No</button>
+            <button type="submit" class="btn btn-success" ng-click="confirm()">Yes</button>
+        </div>
+    </div>
+</form>

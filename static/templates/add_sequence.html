@@ -1,0 +1,29 @@
+<form>
+    <div class="modal-header">
+        <h3 class="modal-title" tooltip="{{sessionKey}}" tooltip-placement="bottom">Add/Edit Sequence</h3>
+        <div class="alert alert-info no-bottom-margin" role="alert" ng-show="!sessionKey">Creating a copy of the selected sequence.</div>
+    </div>
+    <div class="modal-body">
+        <div class="form-group sequence-name row">
+            <div class="col-xs-10">
+                <label for="sequenceName">Name</label>
+                <input type="text" id="sequenceName" ng-model="sequenceName" class="form-control" placeholder="Sequence Name">
+            </div>
+        </div>
+        <div class="form-group">
+            <label>Sequence</label>
+            <div class="node row" ng-repeat="item in sequence track by $index">
+                <div class="col-xs-10">
+                    <input type="number" ng-model="sequence[$index]" class="form-control" placeholder="New Integer">
+                </div>
+                <div class="btn btn-primary btn-sm" ng-show="$last" ng-click="addSequenceItem()"><span class="glyphicon glyphicon-plus"></span></div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <div class="pull-right">
+            <button type="button" class="btn btn-danger" ng-click="cancel()">Cancel</button>
+            <button type="submit" class="btn btn-success" ng-click="createSequence()">Submit</button>
+        </div>
+    </div>
+</form>

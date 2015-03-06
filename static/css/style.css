@@ -1,0 +1,12 @@
+.sequence-list li .controls, .sequence-list tr .controls {
+    visibility:hidden;
+}
+.sequence-list li:hover .controls, .sequence-list tr:hover .controls {
+    visibility:visible;
+}
+.clickable{
+    cursor: pointer;
+}
+.no-bottom-margin{
+    margin-bottom:0px;
+}
