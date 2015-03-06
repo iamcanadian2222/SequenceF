@@ -152,7 +152,7 @@ def get_next_largest(session_id, index):
 # --- POST /session/ { "sequence": [ 1, 2, 3, 4, 1] }
 # --- GET /session/:sessionid/nextHighestIndex/:index
 # --- GET /session/:id/
-# DELETE /session/:id
+# --- DELETE /session/:id
 
 app = webapp2.WSGIApplication([
     ('/', MainHandler),

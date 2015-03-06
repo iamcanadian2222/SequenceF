@@ -46,7 +46,7 @@ sequenceApp.controller('SequenceCtrl', function($scope, $http, $modal, $log, $fi
                 item.sequence = map["item"].sequence;
             }
             else {
-                $scope.sequences.unshift(item); //add to the beginning of the array
+                $scope.sequences.unshift(map["item"]); //add to the beginning of the array
             }
         }, function () {
           $log.info('Modal dismissed at: ' + new Date());
@@ -112,7 +112,7 @@ sequenceApp.controller('ModalAddNewCtrl', function ($scope, $modalInstance, $htt
             $http.post("/sequence", {"sequence": $scope.sequence, "name": $scope.sequenceName})
                 .success(function (data, status) {
                     var map = {"isEdit": false, "item": data};
-                    $modalInstance.close(data);
+                    $modalInstance.close(map);
                 })
                 .error(function (data, status) {
                     alert("Oh noes!");
